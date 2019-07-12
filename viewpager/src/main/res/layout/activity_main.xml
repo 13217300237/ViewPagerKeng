@@ -7,7 +7,7 @@
     android:padding="20dp"
     tools:context=".MainActivity">
 
-    <android.support.v4.view.ViewPager
+    <study.hank.com.viewpager.MyViewPager
         android:id="@+id/vp"
         android:background="#ddccdd"
         android:layout_width="wrap_content"
