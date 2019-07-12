@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ViewPager vp = findViewById(R.id.vp);
+        vp.setOffscreenPageLimit(1);
 
         List<Data> list = new ArrayList<>();
         list.add(new Data("1"));

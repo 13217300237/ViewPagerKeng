@@ -25,6 +25,8 @@ public class MyViewPager extends ViewPager {
         final int count = getChildCount();
         View child;
 
+        Log.d("onMeasureTag","看来ViewPager的滑动，会触发onMeasure，具体的原因待查");
+
         //我原本想直接使用子view测量之后的宽高，然后发现，尼玛，ViewPager根本就没有针对考虑子View的WrapContent
 //        for (int i = 0; i < count; i++) {
 //            //算出所有子view的最大宽度
