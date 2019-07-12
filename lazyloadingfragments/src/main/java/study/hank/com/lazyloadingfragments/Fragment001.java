@@ -15,6 +15,11 @@ public class Fragment001 extends BaseFragment {
     }
 
     @Override
+    protected String getFragmentTag() {
+        return "Fragment001Tag";
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.fragment_001;
     }

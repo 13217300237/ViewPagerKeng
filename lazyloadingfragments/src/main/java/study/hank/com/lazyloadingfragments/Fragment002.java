@@ -6,9 +6,14 @@ import android.widget.TextView;
 
 public class Fragment002 extends BaseFragment {
 
+    @Override
+    protected String getFragmentTag() {
+        return "Fragment002Tag";
+    }
+
     public static Fragment002 newInstance(String text) {
         Bundle args = new Bundle();
-        args.putString("text",text);
+        args.putString("text", text);
         Fragment002 fragment = new Fragment002();
         fragment.setArguments(args);
         return fragment;

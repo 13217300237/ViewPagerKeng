@@ -5,6 +5,10 @@ import android.view.View;
 import android.widget.TextView;
 
 public class Fragment003 extends BaseFragment {
+    @Override
+    protected String getFragmentTag() {
+        return "Fragment003Tag";
+    }
 
     public static Fragment003 newInstance(String text) {
         Bundle args = new Bundle();
