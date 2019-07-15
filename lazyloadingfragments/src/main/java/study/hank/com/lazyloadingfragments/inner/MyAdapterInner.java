@@ -1,6 +1,6 @@
-package study.hank.com.lazyloadingfragments;
+package study.hank.com.lazyloadingfragments.inner;
 
-import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,19 +8,19 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.List;
 
-import study.hank.com.lazyloadingfragments.inner.InnerViewPagerFragment;
+import study.hank.com.lazyloadingfragments.MyFragment;
 
 /**
- * ViewPager适配器 外层
+ *
  */
-public class MyAdapter extends FragmentPagerAdapter {
+public class MyAdapterInner extends FragmentPagerAdapter {
 
     private List<Data> dataList;
-    private Activity activity;
+    private Context context;
 
-    MyAdapter(Activity activity, FragmentManager fm, List<Data> dataList) {
+    MyAdapterInner(Context context, FragmentManager fm, List<Data> dataList) {
         super(fm);
-        this.activity = activity;
+        this.context = context;
         this.dataList = dataList;
     }
 
@@ -32,11 +32,6 @@ public class MyAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        //把第二个变成带内嵌Viewpager的fragment
-        if (i == 1) {
-            return InnerViewPagerFragment.newInstance(activity, dataList.get(i).text);
-        }
-        //其他的还是不带内嵌的
         return MyFragment.newInstance(dataList.get(i).text, i);
     }
 

@@ -1,14 +1,17 @@
-package study.hank.com.lazyloadingfragments;
+package study.hank.com.lazyloadingfragments.base;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.List;
 
 /**
  * 源码从BaseFragment中复制而来，造就一个带有 懒加载机制的Fragment基类
@@ -223,7 +226,12 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
     /**
      * @param isVisible 目标，true变为可见，false。变为不可见
      */
-    private void dispatchVisibleState(boolean isVisible) {
+    void dispatchVisibleState(boolean isVisible) {
+        Log.d(getLogTag(), "dispatchVisibleState:" + isVisible + "    isParentInvisible():" + isParentInvisible());
+        //为了兼容内嵌ViewPager的情况,分发时，还要判断父Fragment是不是可见
+        if (isVisible && isParentInvisible()) {//如果当前可见，但是父容器不可见，那么也不必分发
+            return;
+        }
         if (isVisible == currentVisibleState) return;//如果目标值，和当前值相同，那就别费劲了
         currentVisibleState = isVisible;//更新状态值
         if (isVisible) {//如果可见
@@ -233,10 +241,43 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
                 onFragmentFirstVisible();
             }
             onFragmentResume();
+            dispatchChildVisibilityState(true);
         } else {
             onFragmentPause();
+            dispatchChildVisibilityState(false);
         }
 
+    }
+
+    /**
+     * 判断父Fragment是不是可见
+     *
+     * @return 可见 true， 不可见 false
+     */
+    private boolean isParentInvisible() {
+        Fragment parent = getParentFragment();
+        Log.d(getLogTag(), "getParentFragment:" + parent + "");
+        if (parent instanceof BaseLazyLoadingFragment) {
+            BaseLazyLoadingFragment lz = (BaseLazyLoadingFragment) parent;
+            return !lz.currentVisibleState;
+        }
+        return false;// 默认可见
+    }
+
+    /**
+     * @param isVisible
+     */
+    private void dispatchChildVisibilityState(boolean isVisible) {
+        FragmentManager fragmentManager = getChildFragmentManager();
+        List<Fragment> list = fragmentManager.getFragments();
+        if (list != null) {
+            for (Fragment fg : list) {
+                if (fg instanceof BaseLazyLoadingFragment
+                        && !fg.isHidden() && fg.getUserVisibleHint()) {//  判断可见要双重判定，isHidden和getUserVisibleHint
+                    ((BaseLazyLoadingFragment) fg).dispatchVisibleState(isVisible);
+                }
+            }
+        }
     }
 
     /**

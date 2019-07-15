@@ -7,16 +7,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MyFragment extends BaseLazyLoadingFragment {
+import study.hank.com.lazyloadingfragments.base.BaseLazyLoadingFragment;
 
+public class MyFragment extends BaseLazyLoadingFragment {
 
     private Button tv;
     private String textArg;
+    private int index;
     private CountDownTimer countDownTimer;
 
-    public static MyFragment newInstance(String text) {
+    public static MyFragment newInstance(String text, int index) {
         Bundle args = new Bundle();
         args.putString("text", text);
+        args.putInt("index", index);
         MyFragment fragment = new MyFragment();
         fragment.setArguments(args);
         return fragment;
@@ -35,6 +38,7 @@ public class MyFragment extends BaseLazyLoadingFragment {
 
     @Override
     protected void initView(View root) {
+        index = getArguments().getInt("index");
         tv = root.findViewById(R.id.tv);
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +47,28 @@ public class MyFragment extends BaseLazyLoadingFragment {
                 startActivity(i);
             }
         });
+
+        //根据参数改变颜色
+        switch (index) {
+            case 0:
+                root.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                break;
+            case 1:
+                root.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
+                break;
+            case 2:
+                root.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
+                break;
+            case 3:
+                root.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
+                break;
+            case 4:
+                root.setBackgroundColor(getResources().getColor(android.R.color.holo_purple));
+                break;
+            default:
+                break;
+        }
+
     }
 
     long totalTime = 1000L;
