@@ -1,6 +1,7 @@
 package study.hank.com.lazyloadingfragments;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,27 +16,21 @@ public class MyAdapter extends FragmentPagerAdapter {
     private List<Data> dataList;
     private Context context;
 
-    public MyAdapter(Context context, FragmentManager fm, List<Data> dataList) {
+    MyAdapter(Context context, FragmentManager fm, List<Data> dataList) {
         super(fm);
         this.context = context;
         this.dataList = dataList;
     }
 
+    @Nullable
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return dataList.get(position).text;
+    }
+
     @Override
     public Fragment getItem(int i) {
-        switch (i) {
-            case 0:
-                return Fragment001.newInstance(dataList.get(i).text);
-            case 1:
-                return Fragment002.newInstance(dataList.get(i).text);
-            case 2:
-                return Fragment003.newInstance(dataList.get(i).text);
-            case 3:
-                return Fragment004.newInstance(dataList.get(i).text);
-            default:
-                break;
-        }
-        return null;
+        return MyFragment.newInstance(dataList.get(i).text);
     }
 
     @Override

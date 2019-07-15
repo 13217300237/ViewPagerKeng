@@ -1,6 +1,7 @@
 package study.hank.com.lazyloadingfragments;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -13,6 +14,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager vp;
+    private TabLayout tabLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,14 +23,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         List<MyAdapter.Data> data = new ArrayList<>();
-        data.add(new MyAdapter.Data("1111111111111"));
-        data.add(new MyAdapter.Data("2222222222222"));
-        data.add(new MyAdapter.Data("3333333333333"));
-        data.add(new MyAdapter.Data("4444444444444"));
+        for (int i = 0; i < 5; i++) {
+            data.add(new MyAdapter.Data(i + ""));
+        }
 
+        tabLayout = findViewById(R.id.tabLayout);
         vp = findViewById(R.id.vp);
         MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), data);
         vp.setAdapter(adapter);
 
+        tabLayout.setupWithViewPager(vp);
     }
 }
