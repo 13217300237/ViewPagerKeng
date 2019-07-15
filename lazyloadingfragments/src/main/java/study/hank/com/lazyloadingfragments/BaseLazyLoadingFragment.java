@@ -31,7 +31,7 @@ import android.view.ViewGroup;
  * <p>
  * 1、滑动过程中显示那个页面，就去加载哪个页面的数据
  * 2、比如从Fragment的一个按钮跳转到另一个Activity，再回来时，也只有当前这个可见的Fragment会执行UI更新
- * 3、
+ * 3、当其中一个Fragment的内容，也是ViewPager+Fragment，结果形成了嵌套结构时，跳转到另外的Activity再回来，这个内部的多个Fragment，生命周期也会出现不必要的执行
  */
 public abstract class BaseLazyLoadingFragment extends Fragment {
 
