@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class MyAdapter extends FragmentPagerAdapter {
 
+    private boolean ifUseInnerViewPager = false;
+
     private List<Data> dataList;
     private Activity activity;
 
@@ -20,6 +22,15 @@ public class MyAdapter extends FragmentPagerAdapter {
         super(fm);
         this.activity = activity;
         this.dataList = dataList;
+    }
+
+    /**
+     * 是否使用内嵌的ViewPager+Fragment
+     *
+     * @param ifUseInnerViewPager
+     */
+    public void setIfUseInnerViewPager(boolean ifUseInnerViewPager) {
+        this.ifUseInnerViewPager = ifUseInnerViewPager;
     }
 
     @Nullable
@@ -30,10 +41,12 @@ public class MyAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        //把第二个变成带内嵌Viewpager的fragment
-//        if (i == 1) {
-//            return InnerViewPagerFragment.newInstance(activity, dataList.get(i).text);
-//        }
+        if (ifUseInnerViewPager) {
+            //把第二个变成带内嵌Viewpager的fragment
+            if (i == 1) {
+                return InnerViewPagerFragment.newInstance(activity, dataList.get(i).text);
+            }
+        }
         //其他的还是不带内嵌的
         return MyLazyLoadingFragment.newInstance(dataList.get(i).text, i);
     }

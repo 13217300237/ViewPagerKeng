@@ -211,10 +211,11 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
     }
 
     /**
+     * 这个，是在Fragment被hide/show的时候被调用
      * @param hidden
      */
     @Override
-    public void onHiddenChanged(boolean hidden) {// 这个，是在Fragment被hide/show的时候被调用
+    public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (hidden) {
             dispatchVisibleState(false);
@@ -251,7 +252,6 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
      * @param isVisible 目标，true变为可见，false。变为不可见
      */
     void dispatchVisibleState(boolean isVisible) {
-        Log.d(getLogTag(), "dispatchVisibleState:" + isVisible + "    isParentInvisible():" + isParentInvisible());
         //为了兼容内嵌ViewPager的情况,分发时，还要判断父Fragment是不是可见
         if (isVisible && isParentInvisible()) {//如果当前可见，但是父容器不可见，那么也不必分发
             return;
@@ -270,7 +270,6 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
             onFragmentPause();
             dispatchChildVisibilityState(false);
         }
-
     }
 
     /**
@@ -308,7 +307,7 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
      * 当第一次可见的时候(此方法，在View的一次生命周期中只执行一次)
      */
     protected void onFragmentFirstVisible() {
-        Log.d(getCustomMethodTag(), "第一次可见,进行当前Fragment全局变量初始化，不涉及到UI操作");
+        Log.d(getCustomMethodTag(), "onFragmentFirstVisible 第一次可见,进行当前Fragment全局变量初始化，不涉及到UI操作");
     }
 
     /**

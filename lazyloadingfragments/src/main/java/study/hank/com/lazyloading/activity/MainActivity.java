@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         vp = findViewById(R.id.vp);
         MyAdapter adapter = new MyAdapter(this, getSupportFragmentManager(), data);
+        adapter.setIfUseInnerViewPager(true);
         vp.setAdapter(adapter);
 
         tabLayout.setupWithViewPager(vp);
