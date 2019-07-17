@@ -1,4 +1,4 @@
-package study.hank.com.lazyloadingfragments;
+package study.hank.com.lazyloading;
 
 import org.junit.Test;
 

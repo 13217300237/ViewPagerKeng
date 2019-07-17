@@ -1,4 +1,4 @@
-package study.hank.com.lazyloadingfragments;
+package study.hank.com.lazyloading;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

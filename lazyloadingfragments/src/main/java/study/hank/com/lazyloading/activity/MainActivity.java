@@ -1,4 +1,4 @@
-package study.hank.com.lazyloadingfragments;
+package study.hank.com.lazyloading.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import study.hank.com.lazyloading.R;
+import study.hank.com.lazyloading.frag.MyAdapter;
+
 /**
  * Fragment+ViewPager懒加载实现机制
  */
@@ -15,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager vp;
     private TabLayout tabLayout;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

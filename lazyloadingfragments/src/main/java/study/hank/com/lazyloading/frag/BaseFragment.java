@@ -1,4 +1,4 @@
-package study.hank.com.lazyloadingfragments;
+package study.hank.com.lazyloading.frag;
 
 import android.content.Context;
 import android.os.Bundle;

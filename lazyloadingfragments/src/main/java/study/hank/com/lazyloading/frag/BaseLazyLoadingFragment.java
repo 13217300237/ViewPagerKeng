@@ -1,4 +1,4 @@
-package study.hank.com.lazyloadingfragments.base;
+package study.hank.com.lazyloading.frag;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -27,25 +27,42 @@ import java.util.List;
  * <p>
  * 下面统筹本次ViewPager+Fragment懒加载实现之后，能够得到优化的几个问题：
  * <p>
- * ViewPager+Fragment 有一个特别大的坑。就是 一旦一个Fragment在ViewPager中缓存了，那么当ViewPager所在的Activity执行生命周期函数
- * （onCreate-onStart-onResume-onPause-onStop-onDestroy），那么fragment也会跟着执行(onCreate-onCreateView-onViewCreated-onStart-onResume
- * -onPause-onStop-onDestroyView-onDestroy),无论它是不是可见，这就很尴尬了，明明这个Fragment并不可见，你还去调用生命周期函数去浪费UI资源，
+ * ViewPager+Fragment 有一个特别大的坑。就是 一旦一个Fragment在ViewPager中缓存了，那么
+ * 当ViewPager所在的Activity执行生命周期函数（onCreate-onStart-onResume-onPause-onStop-onDestroy），
+ * 那么fragment也会跟着执行
+ * (onCreate-onCreateView-onViewCreated-onStart-onResume
+ * -onPause-onStop-onDestroyView-onDestroy),
+ * 无论它是不是可见，这就很尴尬了，明明这个Fragment并不可见，你还去调用生命周期函数去浪费UI资源，
  * 很不合理
  * <p>
  * 1、滑动过程中显示那个页面，就去加载哪个页面的数据
  * 2、比如从Fragment的一个按钮跳转到另一个Activity，再回来时，也只有当前这个可见的Fragment会执行UI更新
- * 3、当其中一个Fragment的内容，也是ViewPager+Fragment，结果形成了嵌套结构时，跳转到另外的Activity再回来，这个内部的多个Fragment，生命周期也会出现不必要的执行
+ * 3、当其中一个Fragment的内容，也是ViewPager+Fragment，形成嵌套结构，此时跳转到另外的Activity再回来，这个内部的多个Fragment，生命周期也会出现不必要的执行
  */
 public abstract class BaseLazyLoadingFragment extends Fragment {
 
-    private View mRoot;//Fragment在ViewPager中滑动的时候，可能会发生多次 onDestroyView/onCreateView 的情况，将它提取出来，可以优化内存
+    protected View mRoot;//Fragment在ViewPager中滑动的时候，可能会发生多次 onDestroyView/onCreateView 的情况，将它提取出来，可以优化内存
 
     protected abstract String getLogTag();
 
+    private String getLifeCycleTag() {
+        return "LifeCycle_" + getLogTag();
+    }
+
+    protected String getCustomMethodTag() {
+        return "Custom_" + getLogTag();
+    }
+
+    /**
+     * 主布局xml Id
+     *
+     * @return
+     */
     protected abstract int getLayoutId();
 
     /**
-     * 只是initView，并不涉及到数据
+     * 只是initView，并不涉及到数据,
+     * 用引用来接收 界面内的控件
      * <p>
      * 比如，做一些findViewById
      *
@@ -56,11 +73,12 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.d(getLifeCycleTag(), "onAttach");
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(getLogTag(), "onCreate");
+        Log.d(getLifeCycleTag(), "onCreate");
         super.onCreate(savedInstanceState);
     }
 
@@ -68,7 +86,7 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRoot = inflater.inflate(getLayoutId(), container, false);
-        Log.d(getLogTag(), "onCreateView");
+        Log.d(getLifeCycleTag(), "onCreateView");
         initView(mRoot);
         //在View创建完毕之后，isViewCreate 要变为true
         isViewCreated = true;
@@ -79,6 +97,7 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
 
     @Override
     public void onDestroyView() {//相对应的，当View被销毁的时候，isViewCreated要变为false
+        Log.d(getLifeCycleTag(), "onDestroyView");
         super.onDestroyView();
         isViewCreated = false;
         isFirstVisible = false;
@@ -87,19 +106,19 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(getLogTag(), "onViewCreated");
+        Log.d(getLifeCycleTag(), "onViewCreated");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(getLogTag(), "onStart");
+        Log.d(getLifeCycleTag(), "onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(getLogTag(), "onResume");
+        Log.d(getLifeCycleTag(), "onResume");
 
         //因为onResume可能会在跳转Activity的时候反复执行，但是不是每一次都需要执行true分发
         //存在一个情况。ViewPager+Fragment ，当tab1 滑到 tab2 时， tab3 会执行完整的生命周期 onCreate-onCreateView-onViewCreated-onStart-onResume 但是此时tab3并不是可见的，
@@ -116,7 +135,7 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(getLogTag(), "onPause");
+        Log.d(getLifeCycleTag(), "onPause");
         if (currentVisibleState && getUserVisibleHint()) {
             dispatchVisibleState(false);
         }
@@ -125,18 +144,19 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(getLogTag(), "onStop");
+        Log.d(getLifeCycleTag(), "onStop");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(getLogTag(), "onDestroy");
+        Log.d(getLifeCycleTag(), "onDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d(getLifeCycleTag(), "onDetach");
     }
 
     /**
@@ -284,29 +304,21 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
      * 当第一次可见的时候(此方法，在View的一次生命周期中只执行一次)
      */
     protected void onFragmentFirstVisible() {
-        Log.d(getLogTag(), "第一次可见,进行当前Fragment必要的，和UI无关的初始化操作");
+        Log.d(getCustomMethodTag(), "第一次可见,进行当前Fragment初始化操作");
     }
 
     /**
      * 当fragment变成可见的时候(可能会多次)
-     * <p>
-     * 设计这么一对方法 onFragmentResume / onFragmentPause 可以在快速划过页面的时候，保证资源不浪费
-     * <p>
-     * 比如：一共有4个Fragment，我从1，快速滑到4，中途会经过2,3
-     * 2 3 都会经历 onFragmentResume/onFragmentPause,而 onFragmentResume的时候，会去加载数据，然后调用UI线程刷新界面，
-     * 如果此时，停留时间太短，onFragmentResume请求的网络数据尚未返回，若没有onFragmentResume中断操作，那么，在2 不可见的时候，它也去刷新了UI，这是显然的浪费。
-     * 所以，设计这一对方法，可以放置在某个Fragment不可见的时候，浪费UI资源。
-     * 这样做还可以优化滑动卡顿
      */
     protected void onFragmentResume() {
-        Log.d(getLogTag(), "onFragmentResume 执行网络请求以及，UI操作");
+        Log.d(getCustomMethodTag(), "onFragmentResume 执行网络请求以及，UI操作");
     }
 
     /**
      * 当fragment变成不可见的时候(可能会多次)
      */
     protected void onFragmentPause() {
-        Log.d(getLogTag(), "onFragmentPause 中断网络请求，UI操作");
+        Log.d(getCustomMethodTag(), "onFragmentPause 中断网络请求，UI操作");
     }
 }
 

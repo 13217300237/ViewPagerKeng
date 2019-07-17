@@ -1,4 +1,4 @@
-package study.hank.com.lazyloadingfragments.inner;
+package study.hank.com.lazyloading.frag;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,11 +10,11 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import study.hank.com.lazyloadingfragments.R;
-import study.hank.com.lazyloadingfragments.base.BaseLazyLoadingFragment;
+import study.hank.com.lazyloading.R;
+
 
 /**
- *  内层Fragment，带有嵌套ViewPager
+ * 内层Fragment，带有嵌套ViewPager
  */
 public class InnerViewPagerFragment extends BaseLazyLoadingFragment {
 
@@ -46,6 +46,16 @@ public class InnerViewPagerFragment extends BaseLazyLoadingFragment {
     protected void initView(View root) {
         vpInner = root.findViewById(R.id.vpInner);
         tabLayoutInner = root.findViewById(R.id.tabLayoutInner);
+    }
+
+    @Override
+    protected void onFragmentFirstVisible() {
+        Log.d(getCustomMethodTag(), "首次加载,初始必要全局参数:" + Thread.currentThread().getName());
+    }
+
+    @Override
+    protected void onFragmentResume() {
+        Log.d(getCustomMethodTag(), "页面onResume,加载最新数据:");
         List<MyAdapterInner.Data> data = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             data.add(new MyAdapterInner.Data("inner " + i));
@@ -54,23 +64,11 @@ public class InnerViewPagerFragment extends BaseLazyLoadingFragment {
         vpInner.setAdapter(adapter);
         tabLayoutInner.setupWithViewPager(vpInner);
 
-
-    }
-
-    @Override
-    protected void onFragmentFirstVisible() {
-        Log.d(getLogTag() + "_onFragment", "首次加载,初始必要全局参数:" + Thread.currentThread().getName());
-    }
-
-    @Override
-    protected void onFragmentResume() {
-        Log.d(getLogTag() + "_onFragment", "页面onResume,加载最新数据:");
-
     }
 
     @Override
     protected void onFragmentPause() {
-        Log.d(getLogTag() + "_onFragment", "页面暂停,中断加载数据的所有操作，避免造成资源浪费，避免造成页面卡顿:"
-                + "\n ======================================================================================================");
+        Log.d(getCustomMethodTag(), "页面暂停,中断加载数据的所有操作，避免造成资源浪费和页面卡顿:"
+                + "\n ==============================================================");
     }
 }
