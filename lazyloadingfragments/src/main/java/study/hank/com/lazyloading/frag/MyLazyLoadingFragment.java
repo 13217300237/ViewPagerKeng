@@ -88,13 +88,14 @@ public class MyLazyLoadingFragment extends BaseLazyLoadingFragment {
     @Override
     protected void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
-        initColors();
-        initTimer();
+        initColors();//对全局变量进行初始化，这里是颜色Map
+        initTimer();//定时器初始化，这些东西都不会涉及到UI操作
     }
 
     @Override
     protected void onFragmentResume() {
         super.onFragmentResume();
+        //UI操作
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,6 +112,7 @@ public class MyLazyLoadingFragment extends BaseLazyLoadingFragment {
     @Override
     protected void onFragmentPause() {
         super.onFragmentPause();
+        //耗时任务暂停
         if (countDownTimer != null)
             countDownTimer.cancel();
     }
