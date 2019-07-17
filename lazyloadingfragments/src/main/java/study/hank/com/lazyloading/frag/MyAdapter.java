@@ -31,9 +31,9 @@ public class MyAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         //把第二个变成带内嵌Viewpager的fragment
-        if (i == 1) {
-            return InnerViewPagerFragment.newInstance(activity, dataList.get(i).text);
-        }
+//        if (i == 1) {
+//            return InnerViewPagerFragment.newInstance(activity, dataList.get(i).text);
+//        }
         //其他的还是不带内嵌的
         return MyLazyLoadingFragment.newInstance(dataList.get(i).text, i);
     }

@@ -3,7 +3,6 @@ package study.hank.com.lazyloading.frag;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -46,9 +45,6 @@ public class MyLazyLoadingFragment extends BaseLazyLoadingFragment {
         mRoot = root;
         index = getArguments().getInt("index");
         tv = root.findViewById(R.id.tv);
-
-        initColors();
-        initTimer();
     }
 
     long totalTime = 1000L;
@@ -92,6 +88,8 @@ public class MyLazyLoadingFragment extends BaseLazyLoadingFragment {
     @Override
     protected void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
+        initColors();
+        initTimer();
     }
 
     @Override

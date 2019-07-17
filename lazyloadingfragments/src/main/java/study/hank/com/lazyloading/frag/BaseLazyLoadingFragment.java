@@ -97,10 +97,14 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
 
     @Override
     public void onDestroyView() {//相对应的，当View被销毁的时候，isViewCreated要变为false
-        Log.d(getLifeCycleTag(), "onDestroyView");
         super.onDestroyView();
+        Log.d(getLifeCycleTag(), "onDestroyView");
+        reset();
+    }
+
+    private void reset() {
         isViewCreated = false;
-        isFirstVisible = false;
+        isFirstVisible = true;//还原成初始值
     }
 
     @Override
@@ -219,7 +223,7 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
         }
     }
 
-    // 前方高能
+    // ````前方高能````
     // ************************* 懒加载机制核心标志位 *****************************
     private boolean isViewCreated = false;//View是否已经被创建出来， View的创建是在onCreateView中进行，
     // ViewPager+Fragment很可能会发生多次destroy.create view的情况，所以这个标志位，表示当前fragment的view是否存在
