@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import study.hank.com.lazyloading.R;
 import study.hank.com.lazyloading.activity.AnotherActivity;
 
@@ -43,51 +46,26 @@ public class MyLazyLoadingFragment extends BaseLazyLoadingFragment {
         mRoot = root;
         index = getArguments().getInt("index");
         tv = root.findViewById(R.id.tv);
+
+        initColors();
+        initTimer();
     }
 
     long totalTime = 1000L;
     long interval = 100L;
 
-    @Override
-    protected void onFragmentFirstVisible() {
-        Log.d(getCustomMethodTag() + "_onFragment", "首次加载,初始必要全局参数:" + Thread.currentThread().getName());
+    private Map<Integer, Integer> colors;
+
+    private void initColors() {
+        colors = new HashMap<>();
+        colors.put(0, getResources().getColor(android.R.color.holo_red_dark));
+        colors.put(1, getResources().getColor(android.R.color.holo_green_dark));
+        colors.put(2, getResources().getColor(android.R.color.holo_blue_light));
+        colors.put(3, getResources().getColor(android.R.color.holo_orange_light));
+        colors.put(4, getResources().getColor(android.R.color.holo_purple));
     }
 
-    @Override
-    protected void onFragmentResume() {
-        Log.d(getCustomMethodTag() + "_onFragment", "页面onResume,加载最新数据:");
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getContext(), AnotherActivity.class);
-                startActivity(i);
-            }
-        });
-
-        int color;
-        //根据参数改变颜色
-        switch (index) {
-            case 0:
-                color = getResources().getColor(android.R.color.holo_red_dark);
-                break;
-            case 1:
-                color = getResources().getColor(android.R.color.holo_green_dark);
-                break;
-            case 2:
-                color = getResources().getColor(android.R.color.holo_blue_light);
-                break;
-            case 3:
-                color = getResources().getColor(android.R.color.holo_orange_light);
-                break;
-            case 4:
-                color = getResources().getColor(android.R.color.holo_purple);
-                break;
-            default:
-                color = getResources().getColor(android.R.color.white);
-                break;
-        }
-        mRoot.setBackgroundColor(color);
-
+    private void initTimer() {
         countDownTimer = new CountDownTimer(totalTime, interval) {
             @Override
             public void onTick(final long millisUntilFinished) {
@@ -109,13 +87,32 @@ public class MyLazyLoadingFragment extends BaseLazyLoadingFragment {
                 }, 0);
             }
         };
-        countDownTimer.start();
+    }
+
+    @Override
+    protected void onFragmentFirstVisible() {
+        super.onFragmentFirstVisible();
+    }
+
+    @Override
+    protected void onFragmentResume() {
+        super.onFragmentResume();
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), AnotherActivity.class);
+                startActivity(i);
+            }
+        });
+
+        mRoot.setBackgroundColor(colors.get(index));
+        if (countDownTimer != null)
+            countDownTimer.start();
     }
 
     @Override
     protected void onFragmentPause() {
-        Log.d(getCustomMethodTag() + "_onFragment", "页面暂停,中断加载数据的所有操作，避免造成资源浪费，避免造成页面卡顿:"
-                + "\n ======================================================================================================");
+        super.onFragmentPause();
         if (countDownTimer != null)
             countDownTimer.cancel();
     }

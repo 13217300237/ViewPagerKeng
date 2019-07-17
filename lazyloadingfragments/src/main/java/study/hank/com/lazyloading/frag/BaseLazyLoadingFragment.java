@@ -304,7 +304,7 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
      * 当第一次可见的时候(此方法，在View的一次生命周期中只执行一次)
      */
     protected void onFragmentFirstVisible() {
-        Log.d(getCustomMethodTag(), "第一次可见,进行当前Fragment初始化操作");
+        Log.d(getCustomMethodTag(), "第一次可见,进行当前Fragment全局变量初始化，不涉及到UI操作");
     }
 
     /**
@@ -318,7 +318,7 @@ public abstract class BaseLazyLoadingFragment extends Fragment {
      * 当fragment变成不可见的时候(可能会多次)
      */
     protected void onFragmentPause() {
-        Log.d(getCustomMethodTag(), "onFragmentPause 中断网络请求，UI操作");
+        Log.d(getCustomMethodTag(), "onFragmentPause 中断网络请求，UI操作=======");
     }
 }
 

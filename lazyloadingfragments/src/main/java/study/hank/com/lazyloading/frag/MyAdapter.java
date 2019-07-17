@@ -8,9 +8,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.List;
 
-import study.hank.com.lazyloading.frag.InnerViewPagerFragment;
-import study.hank.com.lazyloading.frag.MyLazyLoadingFragment;
-
 /**
  * ViewPager适配器 外层
  */
@@ -34,9 +31,9 @@ public class MyAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         //把第二个变成带内嵌Viewpager的fragment
-//        if (i == 1) {
-//            return InnerViewPagerFragment.newInstance(activity, dataList.get(i).text);
-//        }
+        if (i == 1) {
+            return InnerViewPagerFragment.newInstance(activity, dataList.get(i).text);
+        }
         //其他的还是不带内嵌的
         return MyLazyLoadingFragment.newInstance(dataList.get(i).text, i);
     }

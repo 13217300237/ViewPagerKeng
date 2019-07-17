@@ -13,12 +13,12 @@ import study.hank.com.lazyloading.frag.MyLazyLoadingFragment;
 /**
  *
  */
-public class MyAdapterInner extends FragmentPagerAdapter {
+public class MyInnerAdapter extends FragmentPagerAdapter {
 
     private List<Data> dataList;
     private Context context;
 
-    public MyAdapterInner(Context context, FragmentManager fm, List<Data> dataList) {
+    public MyInnerAdapter(Context context, FragmentManager fm, List<Data> dataList) {
         super(fm);
         this.context = context;
         this.dataList = dataList;
